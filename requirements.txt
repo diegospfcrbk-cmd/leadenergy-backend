@@ -1,6 +1,6 @@
 flask
-supabase
-pyjwt
-werkzeug
-gunicorn
 flask-cors
+gunicorn
+PyJWT
+supabase
+werkzeug
