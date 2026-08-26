@@ -1,0 +1,5 @@
+flask
+supabase
+pyjwt
+werkzeug
+gunicorn
