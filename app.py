@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']          # obrigatório em produção
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']         # obrigatório em produção
 SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
