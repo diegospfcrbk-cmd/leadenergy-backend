@@ -6,8 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
 
 app = Flask(__name__)
-CORS(app)  # libera o navegador (seu site no Netlify) a chamar esta API
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+CORS(app)  # libera o navegador (seu site no Netlify) a chamar esta API. Depois, restrinja: CORS(app, origins=["https://SEUDOMINIO"])
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']          # obrigatório em produção
 SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -60,7 +60,6 @@ def login():
     if not (email and senha):
         return jsonify({'erro': 'E-mail e senha obrigatórios'}), 400
     u = usuario_por_email(email)
-    # Valida APENAS existência do e-mail e a senha — sem verificar status (ATIVO/SUSPENSO)
     if not u or not check_password_hash(u.get('senha_hash', ''), senha):
         return jsonify({'erro': 'Credenciais inválidas'}), 401
     u.pop('senha_hash', None)
@@ -70,6 +69,7 @@ def login():
 @app.route('/api/leads', methods=['GET'])
 @login_obrigatorio
 def buscar_leads():
+    # contato (telefone/email/site) NÃO vai aqui — só após desbloquear
     q = supabase.table('leads').select(
         'cnpj,razao_social,nome_fantasia,segmento,porte,tensao,uf,municipio').eq('situacao', '02')
     for campo in ('uf', 'municipio', 'segmento', 'porte', 'tensao'):
@@ -109,7 +109,7 @@ def meus_leads():
 def webhook_asaas():
     evento = request.get_json() or {}
     if evento.get('event') in ('PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'):
-        email = (evento.get('payment') or {}).get('externalReference')
+        email = (evento.get('payment') or {}).get('externalReference')  # setar no checkout = email do usuário
         if email:
             supabase.table('usuarios').update({'status': 'ATIVO'}).eq('email', email).execute()
     return jsonify({'sucesso': True}), 200
