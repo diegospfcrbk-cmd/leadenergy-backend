@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeadEnergy · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#050807; --bg2:#0a0f0c; --panel:rgba(255,255,255,.04); --brd:rgba(120,240,170,.16);
+    --ink:#eef4f0; --mut:#8fa199; --faint:#63756c;
+    --neon:#28e070; --neon-b:#5cff9d; --neon-d:#0f9a4c; --glow:rgba(40,224,112,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+       background-image:radial-gradient(circle at 50% 0%,rgba(40,224,112,.10),transparent 60%)}
+  .card{width:100%;max-width:400px;background:linear-gradient(135deg,rgba(40,224,112,.06),var(--panel));
+        border:1px solid var(--brd);border-radius:24px;padding:36px 30px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;justify-content:center;margin-bottom:24px}
+  .brand em{font-style:normal;color:var(--neon)}
+  .mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 35% 30%,var(--neon-b),var(--neon-d));display:grid;place-items:center;color:#04160b;font-size:18px;box-shadow:0 0 20px var(--glow)}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.02em;text-align:center;margin-bottom:6px}
+  .sub{color:var(--mut);font-size:14px;text-align:center;margin-bottom:24px}
+  .form{display:grid;gap:12px}
+  label{font-size:13px;color:var(--mut);margin-bottom:-6px;font-family:"IBM Plex Mono",monospace}
+  input{width:100%;background:var(--bg2);border:1px solid var(--brd);color:var(--ink);border-radius:12px;padding:14px;font-size:15px;font-family:inherit}
+  input:focus{outline:2px solid var(--neon);border-color:transparent}
+  .btn{font-weight:700;padding:14px;border-radius:40px;font-size:15px;cursor:pointer;border:0;margin-top:6px;
+       background:linear-gradient(135deg,var(--neon-b),var(--neon));color:#04160b;transition:transform .15s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 40px var(--glow)}
+  .btn:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
+  .msg{font-size:13.5px;text-align:center;padding:8px 4px 0;display:none;line-height:1.4}
+  .msg.ok{display:block;color:var(--neon)}
+  .msg.err{display:block;color:#ff7a68}
+  .msg.load{display:block;color:var(--mut)}
+  .foot{text-align:center;font-size:14px;color:var(--mut);margin-top:22px}
+  .foot a{color:var(--neon);text-decoration:none;font-weight:600}
+  .foot a:hover{text-decoration:underline}
+  .back{display:block;text-align:center;margin-top:14px;font-size:12.5px;color:var(--faint);text-decoration:none;font-family:"IBM Plex Mono",monospace}
+  .back:hover{color:var(--mut)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand"><span class="mark">⚡</span>Lead<em>Energy</em></div>
+    <h1>Entrar na sua conta</h1>
+    <p class="sub">Acesse seu painel de leads</p>
+    <form class="form" id="login" onsubmit="return entrar(event)">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" placeholder="seu@email.com" required autocomplete="email">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" placeholder="Sua senha" required autocomplete="current-password">
+      <button class="btn" type="submit">Entrar</button>
+      <div class="msg" id="msg"></div>
+    </form>
+    <p class="foot">Ainda não tem conta? <a href="index.html#cadastro">Criar conta grátis</a></p>
+    <a class="back" href="index.html">← Voltar ao site</a>
+  </div>
+
+<script>
+  var API='https://leadenergy-backend.onrender.com';
+  function entrar(e){
+    e.preventDefault();
+    var msg=document.getElementById('msg');
+    var btn=document.querySelector('#login button');
+    var email=document.getElementById('email').value.trim();
+    var senha=document.getElementById('senha').value;
+    msg.className='msg load'; msg.textContent='Entrando...';
+    btn.disabled=true;
+    fetch(API+'/api/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,senha:senha})
+    })
+    .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+    .then(function(res){
+      btn.disabled=false;
+      if(res.ok){
+        try{
+          localStorage.setItem('le_token',res.d.token);
+          localStorage.setItem('le_user',JSON.stringify(res.d.usuario||{}));
+        }catch(_){}
+        msg.className='msg ok';
+        msg.textContent='✓ Bem-vindo! Entrando no painel...';
+        setTimeout(function(){window.location.href='painel.html';},1200);
+      }else{
+        msg.className='msg err';
+        msg.textContent=res.d.erro||'E-mail ou senha incorretos.';
+      }
+    })
+    .catch(function(){
+      btn.disabled=false;
+      msg.className='msg err';
+      msg.textContent='Falha de conexão. Aguarde alguns segundos e tente de novo.';
+    });
+    return false;
+  }
+</script>
+</body>
+</html>

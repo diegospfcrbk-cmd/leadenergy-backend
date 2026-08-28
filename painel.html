@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeadEnergy · Painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#050807; --bg2:#0a0f0c; --panel:rgba(255,255,255,.04); --brd:rgba(120,240,170,.16);
+    --ink:#eef4f0; --mut:#8fa199; --faint:#63756c;
+    --neon:#28e070; --neon-b:#5cff9d; --neon-d:#0f9a4c; --glow:rgba(40,224,112,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 18px}
+  h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+  .mono{font-family:"IBM Plex Mono",monospace}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(5,8,7,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--brd)}
+  .bar{display:flex;align-items:center;gap:14px;padding:12px 0;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque";font-weight:800;font-size:18px}
+  .brand em{font-style:normal;color:var(--neon)}
+  .mark{width:30px;height:30px;border-radius:8px;background:radial-gradient(circle at 35% 30%,var(--neon-b),var(--neon-d));display:grid;place-items:center;color:#04160b;font-size:16px;box-shadow:0 0 16px var(--glow)}
+  .spacer{flex:1}
+  .cred{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--brd);border-radius:30px;padding:7px 14px;font-size:14px}
+  .cred b{color:var(--neon);font-family:"IBM Plex Mono";font-weight:600}
+  .tabs{display:flex;gap:6px}
+  .tab{background:transparent;border:1px solid var(--brd);color:var(--mut);border-radius:30px;padding:7px 14px;font-size:13.5px;cursor:pointer;font-family:inherit}
+  .tab.on{background:var(--neon);color:#04160b;border-color:transparent;font-weight:600}
+  .btn{font-weight:600;padding:8px 15px;border-radius:30px;font-size:13.5px;cursor:pointer;border:1px solid var(--brd);background:transparent;color:var(--ink);font-family:inherit;transition:.15s}
+  .btn:hover{border-color:var(--neon)}
+  .btn.p{background:linear-gradient(135deg,var(--neon-b),var(--neon));color:#04160b;border-color:transparent;font-weight:700}
+  .btn.p:hover{box-shadow:0 0 26px var(--glow)}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  .filters{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0 6px}
+  @media(max-width:860px){.filters{grid-template-columns:1fr 1fr}}
+  .filters .fld{display:flex;flex-direction:column;gap:5px}
+  .filters label{font-size:11.5px;color:var(--mut);font-family:"IBM Plex Mono";text-transform:uppercase;letter-spacing:.06em}
+  select,input{width:100%;background:var(--bg2);border:1px solid var(--brd);color:var(--ink);border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit}
+  select:focus,input:focus{outline:2px solid var(--neon);border-color:transparent}
+  .actions{display:flex;gap:10px;margin:12px 0 22px;flex-wrap:wrap}
+
+  .status{color:var(--mut);font-size:14px;padding:8px 2px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;padding-bottom:60px}
+  .card{background:var(--panel);border:1px solid var(--brd);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .card h3{font-size:17px;line-height:1.25}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:"IBM Plex Mono";font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--brd);color:var(--mut)}
+  .chip.pj{color:var(--neon);border-color:var(--neon-d)}
+  .chip.alta{color:#ffd66b;border-color:#8a6d1e}
+  .locked{filter:blur(5px);user-select:none;pointer-events:none;font-family:"IBM Plex Mono";color:var(--faint)}
+  .contact{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--brd);padding-top:12px}
+  .crow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .crow .ic{width:24px;text-align:center;flex-shrink:0}
+  .crow .val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mut)}
+  .cbtn{background:var(--bg2);border:1px solid var(--brd);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .cbtn:hover{border-color:var(--neon)}
+  .cbtn.wa{background:rgba(40,224,112,.14);border-color:var(--neon-d);color:var(--neon-b);font-weight:600}
+  .foot{margin-top:auto}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--neon);color:#04160b;font-weight:600;padding:10px 18px;border-radius:30px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+  .empty{text-align:center;color:var(--faint);padding:50px 20px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="bar">
+  <div class="brand"><span class="mark">⚡</span>Lead<em>Energy</em></div>
+  <div class="tabs">
+    <button class="tab on" id="tabBuscar" onclick="verBuscar()">Buscar leads</button>
+    <button class="tab" id="tabMeus" onclick="verMeus()">Meus leads</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="cred">Créditos: <b id="cred">–</b></div>
+  <button class="btn" onclick="sair()">Sair</button>
+</div></div></header>
+
+<div class="wrap">
+  <div id="panBuscar">
+    <div class="filters">
+      <div class="fld"><label>Estado (UF)</label><select id="fUf"></select></div>
+      <div class="fld"><label>Município</label><input id="fMun" placeholder="Ex: Criciúma" list="muns"><datalist id="muns"></datalist></div>
+      <div class="fld"><label>Segmento</label><select id="fSeg"></select></div>
+      <div class="fld"><label>Porte</label><select id="fPorte"></select></div>
+      <div class="fld"><label>Tensão</label><select id="fTensao"></select></div>
+    </div>
+    <div class="actions">
+      <button class="btn p" onclick="buscar()">🔎 Buscar</button>
+      <button class="btn" onclick="limpar()">Limpar filtros</button>
+    </div>
+    <div class="status" id="status">Escolha filtros (ou deixe em branco) e clique em Buscar.</div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="panMeus" style="display:none">
+    <div class="actions" style="margin-top:20px">
+      <button class="btn p" onclick="exportar()">⬇️ Exportar Excel (CSV)</button>
+      <span class="status" id="statusMeus"></span>
+    </div>
+    <div class="grid" id="gridMeus"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  var API = 'https://leadenergy-backend.onrender.com';
+  var token = null, user = null, creditos = 0;
+  try { token = localStorage.getItem('le_token'); user = JSON.parse(localStorage.getItem('le_user')||'null'); } catch(e){}
+  if(!token){ location.href = 'login.html'; }
+  if(user && typeof user.creditos !== 'undefined'){ creditos = user.creditos; }
+  document.getElementById('cred').textContent = creditos;
+
+  // ---- opções dos filtros ----
+  var UFS = ['','AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+  var SEGS = ['','Indústria','Construção','Veículos','Comércio atacadista','Comércio varejista','Transporte e logística','Hotelaria','Restaurantes e alimentação','Tecnologia e comunicação','Serviços empresariais','Educação','Saúde','Cultura, esporte e lazer','Serviços pessoais'];
+  var PORTES = ['','Pequeno','Médio/Grande'];
+  var TENS = [['',''],['baixa','Baixa tensão'],['alta','Alta tensão']];
+  function fill(sel, arr, labels){ var s=document.getElementById(sel); arr.forEach(function(v,i){ var o=document.createElement('option'); o.value=v; o.textContent = i===0 ? 'Todos' : (labels?labels[i]:v); s.appendChild(o); }); }
+  fill('fUf', UFS); fill('fSeg', SEGS); fill('fPorte', PORTES);
+  (function(){ var s=document.getElementById('fTensao'); TENS.forEach(function(t,i){ var o=document.createElement('option'); o.value=t[0]; o.textContent=i===0?'Todas':t[1]; s.appendChild(o); }); })();
+
+  function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},1800); }
+  function headers(){ return {'Content-Type':'application/json','Authorization':'Bearer '+token}; }
+  function esc(s){ return (s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+
+  // ---- telefone / celular ----
+  var LIVRES = ['gmail.com','hotmail.com','outlook.com','outlook.com.br','yahoo.com','yahoo.com.br','live.com','bol.com.br','uol.com.br','terra.com.br','icloud.com','aol.com','msn.com','ig.com.br','globo.com','me.com'];
+  function soDigitos(s){ return (s||'').replace(/\D/g,''); }
+  function analisaTel(tel){
+    var d = soDigitos(tel);
+    if(d.length < 10) return null;
+    var ddd = d.slice(0,2), num = d.slice(2);
+    var celular = (num.length===9 && num[0]==='9');
+    return { ddd:ddd, num:num, celular:celular, wa:'https://wa.me/55'+ddd+num, fmt:'('+ddd+') '+num };
+  }
+  function siteDeEmail(site, email){
+    if(site) return site.indexOf('http')===0 ? site : 'https://'+site;
+    var m = (email||'').split('@');
+    if(m.length===2){ var dom=m[1].toLowerCase(); if(LIVRES.indexOf(dom)===-1 && dom.indexOf('.')>0) return 'https://www.'+dom; }
+    return null;
+  }
+  function copiar(txt){ navigator.clipboard.writeText(txt).then(function(){toast('Copiado!')}).catch(function(){toast('Copie manualmente: '+txt)}); }
+  window._copiar = copiar;
+
+  // ---- render cartão ----
+  function cardHTML(l, desbloqueado){
+    var nome = esc(l.nome_fantasia || l.razao_social || 'Empresa');
+    var alta = (l.tensao==='alta');
+    var chips = '<span class="chip pj">PJ</span>'+
+      (l.segmento?'<span class="chip">'+esc(l.segmento)+'</span>':'')+
+      (l.porte?'<span class="chip">'+esc(l.porte)+'</span>':'')+
+      '<span class="chip '+(alta?'alta':'')+'">'+(alta?'⚡ alta tensão':'baixa tensão')+'</span>'+
+      (l.municipio||l.uf?'<span class="chip">'+esc(l.municipio||'')+(l.uf?'/'+esc(l.uf):'')+'</span>':'');
+
+    var body;
+    if(!desbloqueado){
+      body = '<div class="contact"><div class="crow"><span class="ic">🔒</span><span class="locked">•••• •••••• ••••</span></div>'+
+        '<div class="foot"><button class="btn p" style="width:100%" onclick="desbloquear(\''+l.cnpj+'\',this)">Desbloquear contato · 1 crédito</button></div></div>';
+    } else {
+      var tel = analisaTel(l.telefone);
+      var site = siteDeEmail(l.site, l.email);
+      var nomeBusca = encodeURIComponent(l.nome_fantasia || l.razao_social || '');
+      var rows = '';
+      // WhatsApp (só celular)
+      if(tel && tel.celular){
+        rows += crow('💬','WhatsApp', tel.fmt, '<a class="cbtn wa" href="'+tel.wa+'" target="_blank">Abrir WhatsApp</a>');
+      }
+      // Telefone (sempre que houver)
+      if(tel){
+        rows += crow('☎️','Telefone', tel.fmt, '<a class="cbtn" href="tel:+55'+tel.ddd+tel.num+'">Ligar</a>'+
+          '<button class="cbtn" onclick="_copiar(\''+tel.ddd+tel.num+'\')">Copiar</button>');
+      }
+      // E-mail
+      if(l.email){
+        rows += crow('✉️','E-mail', esc(l.email), '<button class="cbtn" onclick="_copiar(\''+esc(l.email)+'\')">Copiar</button>');
+      }
+      // Site (só se existir)
+      if(site){
+        rows += crow('🌐','Site', site.replace(/^https?:\/\//,''), '<a class="cbtn" href="'+site+'" target="_blank">Abrir</a>');
+      }
+      // Instagram (só se existir de verdade)
+      if(l.instagram){
+        var ig = String(l.instagram).replace(/^@/,'');
+        rows += crow('📸','Instagram', '@'+ig, '<a class="cbtn" href="https://instagram.com/'+ig+'" target="_blank">Abrir</a>');
+      }
+      body = '<div class="contact">'+rows+'</div>';
+    }
+    return '<div class="card"><h3>'+nome+'</h3><div class="chips">'+chips+'</div>'+body+'</div>';
+  }
+  function crow(ic,label,val,btns){
+    return '<div class="crow"><span class="ic">'+ic+'</span><span class="val" title="'+esc(val)+'">'+esc(val)+'</span>'+btns+'</div>';
+  }
+
+  // ---- buscar leads ----
+  function buscar(){
+    var q = [];
+    var uf=val('fUf'), mun=val('fMun'), seg=val('fSeg'), porte=val('fPorte'), tensao=val('fTensao');
+    if(uf) q.push('uf='+encodeURIComponent(uf));
+    if(mun) q.push('municipio='+encodeURIComponent(mun));
+    if(seg) q.push('segmento='+encodeURIComponent(seg));
+    if(porte) q.push('porte='+encodeURIComponent(porte));
+    if(tensao) q.push('tensao='+encodeURIComponent(tensao));
+    q.push('limite=60');
+    setStatus('Buscando...');
+    document.getElementById('grid').innerHTML='';
+    fetch(API+'/api/leads?'+q.join('&'), {headers:headers()})
+      .then(function(r){ if(r.status===401){ sair(); return {leads:[]}; } return r.json(); })
+      .then(function(d){
+        var leads = d.leads||[];
+        if(!leads.length){ setStatus(''); document.getElementById('grid').innerHTML='<div class="empty">Nenhum lead encontrado com esses filtros. Tente afrouxar.</div>'; return; }
+        setStatus(leads.length+' leads encontrados. Desbloqueie os contatos que quiser.');
+        document.getElementById('grid').innerHTML = leads.map(function(l){ return cardHTML(l,false); }).join('');
+      })
+      .catch(function(){ setStatus('Falha de conexão. Tente de novo em alguns segundos.'); });
+  }
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function setStatus(s){ document.getElementById('status').textContent=s; }
+  function limpar(){ ['fUf','fMun','fSeg','fPorte','fTensao'].forEach(function(id){document.getElementById(id).value='';}); }
+
+  // ---- desbloquear ----
+  function desbloquear(cnpj, btn){
+    btn.disabled=true; btn.textContent='Desbloqueando...';
+    fetch(API+'/api/leads/'+cnpj+'/desbloquear', {method:'POST', headers:headers()})
+      .then(function(r){ return r.json().then(function(d){return {ok:r.ok,st:r.status,d:d};}); })
+      .then(function(res){
+        if(res.ok){
+          if(creditos>0){ creditos--; document.getElementById('cred').textContent=creditos; }
+          var card = btn.closest('.card');
+          card.outerHTML = cardHTML(res.d.lead, true);
+          toast('Contato desbloqueado!');
+        } else if(res.st===402){
+          btn.disabled=false; btn.textContent='Desbloquear contato · 1 crédito';
+          toast('Você está sem créditos. Fale com o suporte pra comprar mais.');
+        } else {
+          btn.disabled=false; btn.textContent='Desbloquear contato · 1 crédito';
+          toast(res.d.erro||'Erro ao desbloquear.');
+        }
+      })
+      .catch(function(){ btn.disabled=false; btn.textContent='Desbloquear contato · 1 crédito'; toast('Falha de conexão.'); });
+  }
+
+  // ---- meus leads ----
+  var meusCache = [];
+  function verMeus(){
+    document.getElementById('tabMeus').classList.add('on'); document.getElementById('tabBuscar').classList.remove('on');
+    document.getElementById('panMeus').style.display=''; document.getElementById('panBuscar').style.display='none';
+    document.getElementById('statusMeus').textContent='Carregando...';
+    fetch(API+'/api/meus-leads', {headers:headers()})
+      .then(function(r){ if(r.status===401){ sair(); return {leads:[]}; } return r.json(); })
+      .then(function(d){
+        meusCache = d.leads||[];
+        document.getElementById('statusMeus').textContent = meusCache.length+' leads desbloqueados.';
+        var g=document.getElementById('gridMeus');
+        g.innerHTML = meusCache.length ? meusCache.map(function(l){return cardHTML(l,true);}).join('') : '<div class="empty">Você ainda não desbloqueou nenhum lead.</div>';
+      });
+  }
+  function verBuscar(){
+    document.getElementById('tabBuscar').classList.add('on'); document.getElementById('tabMeus').classList.remove('on');
+    document.getElementById('panBuscar').style.display=''; document.getElementById('panMeus').style.display='none';
+  }
+
+  // ---- exportar ----
+  function exportar(){
+    if(!meusCache.length){ toast('Nada pra exportar ainda.'); return; }
+    var cols=['razao_social','nome_fantasia','segmento','porte','tensao','uf','municipio','telefone','email','cnpj'];
+    var head=cols.join(';');
+    var linhas = meusCache.map(function(l){ return cols.map(function(c){ return '"'+String(l[c]||'').replace(/"/g,'""')+'"'; }).join(';'); });
+    var csv='﻿'+head+'\n'+linhas.join('\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='meus-leads-leadenergy.csv'; a.click();
+  }
+
+  function sair(){ try{localStorage.removeItem('le_token');localStorage.removeItem('le_user');}catch(e){} location.href='login.html'; }
+</script>
+</body>
+</html>
