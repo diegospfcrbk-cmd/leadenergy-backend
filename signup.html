@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadEnergy - Criar Conta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #16a34a;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #16a34a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #16a34a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: #f9f9f9;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #16a34a;
+            background: white;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.error {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert.success {
+            background-color: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #86efac;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #15803d;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #16a34a;
+            font-size: 14px;
+        }
+
+        .link-container {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .link-container a {
+            color: #16a34a;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .link-container a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            background: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #166534;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .password-requirements.show {
+            display: block;
+        }
+
+        .password-requirements ul {
+            margin-left: 20px;
+        }
+
+        .password-requirements li {
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <span>Lead<strong style="color: #16a34a;">Energy</strong></span>
+            </div>
+
+            <h1>Criar Conta</h1>
+            <p class="subtitle">Comece a capturar leads agora</p>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="nome">Seu nome</label>
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="João Silva"
+                        required
+                    >
+                    <div class="error-message" id="nomeError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Seu e-mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="seu@email.com"
+                        required
+                    >
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Crie uma senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                    >
+                    <div class="error-message" id="senhaError"></div>
+                    <div class="password-requirements" id="passwordReqs">
+                        <ul>
+                            <li id="reqLength" style="color: #dc2626;">✗ Mínimo 6 caracteres</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">Criar minha conta</button>
+                <div class="loading" id="loading">Criando sua conta...</div>
+            </form>
+
+            <div class="link-container">
+                Já tem uma conta? <a href="javascript:void(0)" onclick="window.location.href='/'">Entrar aqui</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const alertDiv = document.getElementById('alert');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingDiv = document.getElementById('loading');
+        const senhaInput = document.getElementById('senha');
+        const passwordReqs = document.getElementById('passwordReqs');
+
+        // Validações em tempo real
+        senhaInput.addEventListener('input', (e) => {
+            const senha = e.target.value;
+            const reqLength = document.getElementById('reqLength');
+
+            if (senha.length >= 6) {
+                reqLength.innerHTML = '✓ Mínimo 6 caracteres';
+                reqLength.style.color = '#16a34a';
+            } else {
+                reqLength.innerHTML = '✗ Mínimo 6 caracteres';
+                reqLength.style.color = '#dc2626';
+            }
+
+            if (senha.length > 0) {
+                passwordReqs.classList.add('show');
+            } else {
+                passwordReqs.classList.remove('show');
+            }
+        });
+
+        // Validar email em tempo real
+        document.getElementById('email').addEventListener('blur', function() {
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (this.value && !emailRegex.test(this.value)) {
+                emailError.textContent = 'Email inválido';
+                emailError.classList.add('show');
+            } else {
+                emailError.classList.remove('show');
+            }
+        });
+
+        // Validar nome
+        document.getElementById('nome').addEventListener('blur', function() {
+            const nomeError = document.getElementById('nomeError');
+
+            if (this.value.trim().length > 0 && this.value.trim().length < 3) {
+                nomeError.textContent = 'Nome deve ter pelo menos 3 caracteres';
+                nomeError.classList.add('show');
+            } else {
+                nomeError.classList.remove('show');
+            }
+        });
+
+        // Enviar formulário
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const senha = document.getElementById('senha').value;
+
+            // Validações
+            let hasError = false;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!nome || nome.length < 3) {
+                document.getElementById('nomeError').textContent = 'Nome deve ter pelo menos 3 caracteres';
+                document.getElementById('nomeError').classList.add('show');
+                hasError = true;
+            }
+
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = 'Email inválido';
+                document.getElementById('emailError').classList.add('show');
+                hasError = true;
+            }
+
+            if (!senha || senha.length < 6) {
+                document.getElementById('senhaError').textContent = 'Senha deve ter pelo menos 6 caracteres';
+                document.getElementById('senhaError').classList.add('show');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Preparar dados
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            try {
+                // Determinar a URL base da API
+                const apiUrl = window.location.origin === 'file://'
+                    ? 'http://localhost:3000'
+                    : window.location.origin;
+
+                const response = await fetch(`${apiUrl}/api/registrar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, senha, nome })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Sucesso
+                    alertDiv.classList.add('success');
+                    alertDiv.classList.remove('error');
+                    alertDiv.textContent = '✓ ' + data.mensagem;
+                    alertDiv.classList.add('show');
+
+                    // Salvar token
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+                    }
+
+                    // Limpar form
+                    form.reset();
+                    passwordReqs.classList.remove('show');
+
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    // Erro
+                    alertDiv.classList.add('error');
+                    alertDiv.classList.remove('success');
+                    alertDiv.textContent = '✗ ' + (data.erro || 'Erro ao registrar');
+                    alertDiv.classList.add('show');
+
+                    submitBtn.disabled = false;
+                    submitBtn.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alertDiv.classList.add('error');
+                alertDiv.classList.remove('success');
+                alertDiv.textContent = '✗ Erro ao conectar com o servidor';
+                alertDiv.classList.add('show');
+
+                submitBtn.disabled = false;
+                submitBtn.style.display = 'block';
+                loadingDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
