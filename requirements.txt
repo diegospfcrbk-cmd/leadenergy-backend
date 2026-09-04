@@ -1,6 +1,0 @@
-flask
-supabase
-pyjwt
-werkzeug
-gunicorn
-flask-cors
